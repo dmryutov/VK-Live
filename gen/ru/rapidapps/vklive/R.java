@@ -67,10 +67,11 @@ public final class R {
         public static final int RelativeLayout1=0x7f0a000d;
         public static final int RelativeLayout2=0x7f0a0011;
         public static final int Space1=0x7f0a000e;
-        public static final int action_settings=0x7f0a0016;
+        public static final int action_settings=0x7f0a0017;
         public static final int age_city=0x7f0a0014;
         public static final int btnSignIn=0x7f0a0009;
         public static final int btnSignUp=0x7f0a0008;
+        public static final int button1=0x7f0a0016;
         public static final int counter=0x7f0a0003;
         public static final int drawer_layout=0x7f0a000a;
         public static final int frame_container=0x7f0a000b;
