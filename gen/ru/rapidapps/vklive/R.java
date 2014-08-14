@@ -52,38 +52,30 @@ public final class R {
         public static final int ic_drawer=0x7f020002;
         public static final int ic_home=0x7f020003;
         public static final int ic_launcher=0x7f020004;
-        public static final int ic_online_mobile=0x7f020005;
-        public static final int ic_pages=0x7f020006;
-        public static final int ic_people=0x7f020007;
-        public static final int ic_photos=0x7f020008;
-        public static final int ic_whats_hot=0x7f020009;
-        public static final int list_item_bg_normal=0x7f02000a;
-        public static final int list_item_bg_pressed=0x7f02000b;
-        public static final int list_selector=0x7f02000c;
+        public static final int ic_pages=0x7f020005;
+        public static final int ic_people=0x7f020006;
+        public static final int ic_photos=0x7f020007;
+        public static final int ic_whats_hot=0x7f020008;
+        public static final int list_item_bg_normal=0x7f020009;
+        public static final int list_item_bg_pressed=0x7f02000a;
+        public static final int list_selector=0x7f02000b;
     }
     public static final class id {
         public static final int AbsoluteLayout1=0x7f0a0004;
         public static final int LinearLayout1=0x7f0a0000;
-        public static final int RelativeLayout1=0x7f0a000d;
-        public static final int RelativeLayout2=0x7f0a0011;
-        public static final int Space1=0x7f0a000e;
-        public static final int action_settings=0x7f0a0016;
-        public static final int age_city=0x7f0a0014;
+        public static final int action_settings=0x7f0a000f;
         public static final int btnSignIn=0x7f0a0009;
         public static final int btnSignUp=0x7f0a0008;
         public static final int counter=0x7f0a0003;
         public static final int drawer_layout=0x7f0a000a;
         public static final int frame_container=0x7f0a000b;
         public static final int icon=0x7f0a0001;
+        public static final int imageView1=0x7f0a000e;
         public static final int layout1=0x7f0a0005;
         public static final int layout2=0x7f0a0007;
-        public static final int linearLayout1=0x7f0a000f;
         public static final int list_slidermenu=0x7f0a000c;
-        public static final int online_mobile=0x7f0a0015;
-        public static final int online_status=0x7f0a0013;
-        public static final int profile_pic=0x7f0a0010;
+        public static final int textView1=0x7f0a000d;
         public static final int title=0x7f0a0002;
-        public static final int user_name=0x7f0a0012;
         public static final int webview=0x7f0a0006;
     }
     public static final class layout {

@@ -3,7 +3,6 @@ package ru.rapidapps.vklive;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 
 import ru.rapidapps.vklive.adapter.NavDrawerListAdapter;
@@ -28,14 +27,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.perm.kate.api.Api;
-import com.perm.kate.api.City;
 import com.perm.kate.api.User;
 
 
 public class MainActivity extends Activity {
 
-	
-	
 		//Боковое меню
 	private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
@@ -52,10 +48,7 @@ public class MainActivity extends Activity {
 	
     	// Массив пользователей
     public ArrayList<User> user;
-    
-    
-    	// Массив городов
-    public ArrayList<City> city;
+    public Collection<Long> uids = new ArrayList<Long>();
     
     public Fragment fragment;
     public Drawable draw;
@@ -103,7 +96,7 @@ public class MainActivity extends Activity {
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         if (savedInstanceState == null) {
-            displayView(0); // Показ страницы (Моя страница) при запуске
+            displayView(1); // Показ страницы (Новости) при запуске
         }
         mDrawerList.setOnItemClickListener(new SlideMenuClickListener());
 		
@@ -225,106 +218,43 @@ public class MainActivity extends Activity {
     
     /****************************** End Боковое меню ******************************/
     
-    /****************************** Begin Страница пользователя ******************************/
+    /****************************** End Страница пользователя ******************************/
 	
-    // Показ профиля
-	void ShowUserProfile(final long user_id) 
-	{
-        new Thread()
-        {
+    	// Показ профиля
+	void ShowUserProfile(final long user_id) {
+        new Thread(){
             @Override
-            public void run()
-            {
-            	Collection cid=new ArrayList();
-        		Collection uid = new ArrayList();
-        		try 
-        		{
-                	uid.add(user_id);
-            		user = api.getProfiles(uid, null, "sex, bdate, city, country, photo_50, photo_100, photo_200_orig, photo_200, photo_400_orig, photo_max, photo_max_orig, online, online_mobile, domain, has_mobile, contacts, connections, site, education, universities, schools, can_post, can_see_all_posts, can_see_audio, can_write_private_message, status, last_seen, common_count, relation, relatives, counters, screen_name, maiden_name, timezone, occupation, activities, interests, music, movies, tv, books, games, about, quotes", null, null, null);
-                    draw = grabImageFromUrl(user.get(0).photo_200);
-                    cid.add(user.get(0).city);
-					city = api.getCities(cid);
-				} catch (Exception e)
-				{
-					e.printStackTrace();
-				}
-        		runOnUiThread(successRunnable);                
+            public void run(){
+                try {
+                	user = null;
+                	uids.add(user_id);
+            		user = api.getProfiles(uids, null, "sex, bdate, city, country, photo_50, photo_100, photo_200_orig, photo_200, photo_400_orig, photo_max, photo_max_orig, online, online_mobile, domain, has_mobile, contacts, connections, site, education, universities, schools, can_post, can_see_all_posts, can_see_audio, can_write_private_message, status, last_seen, common_count, relation, relatives, counters, screen_name, maiden_name, timezone, occupation,activities, interests, music, movies, tv, books, games, about, quotes", null, null, null);
+                    draw = grabImageFromUrl(user.get(0).photo_big);
+                    
+                    runOnUiThread(successRunnable);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }.start();
     }
 	
-	Runnable successRunnable = new Runnable()
-	{
+	Runnable successRunnable = new Runnable(){
         @Override
-        public void run()
-        {        	  	
-        	if (user != null) 
-        	{
-        		if(city != null)
-        		{
-        			((TextView) fragment.getView().findViewById(R.id.age_city)).setText(getAgeFromBDay(user.get(0).birthdate)+", "+city.get(0).name);
-        		}
-        		else
-        		{
-        			Toast.makeText(getApplicationContext(), "Город не найден!", Toast.LENGTH_SHORT).show();
-        		}      
-        		
-        	    ((TextView) fragment.getView().findViewById(R.id.user_name)).setText(user.get(0).first_name + " " + user.get(0).last_name);
-        	    ((TextView) fragment.getView().findViewById(R.id.online_status)).setText(user.get(0).online?"Online":"Offline");
-        	    try 
-        	    {
-        	    	((ImageView) fragment.getView().findViewById(R.id.online_mobile)).setVisibility(user.get(0).online_mobile?View.VISIBLE:View.GONE);
-        			((ImageView) fragment.getView().findViewById(R.id.profile_pic)).setImageDrawable(draw);
-        		} catch (Exception e) 
-        		{
+        public void run() {
+        	if (user != null) {
+        	    ((TextView) fragment.getView().findViewById(R.id.textView1)).setText(user.get(0).first_name + " " + user.get(0).last_name);
+        		try {
+        			((ImageView) fragment.getView().findViewById(R.id.imageView1)).setImageDrawable(draw);
+        		} catch (Exception e) {
         			e.printStackTrace();
         		}
         	}
-    		else 
-    		{
-    			Toast.makeText(getApplicationContext(), "Пользователь не найден!", Toast.LENGTH_SHORT).show();
-    		}
+    		else {Toast.makeText(getApplicationContext(), "Пользователь не найден!", Toast.LENGTH_SHORT).show(); }
         }
     };
-    
-	//Считаем возраст по дате рождения
-	public String getAgeFromBDay(String bday)
-    {
-		int age;
-		String add = "лет";
-		Calendar cal=Calendar.getInstance();
-    	String[] date=bday.split("\\.");
-    	int[] dt=new int[date.length];
-    	for(int i=0;i<date.length;i++)
-    	{
-    		dt[i]=Integer.parseInt(date[i]);
-    	}
-    	age=cal.get(Calendar.YEAR)-dt[2];
-    	if(dt[1]>cal.get(Calendar.MONTH))
-    	{
-    		age--;
-    	}
-    	else if(dt[1]==cal.get(Calendar.MONTH))
-    	{
-    		if(dt[0]>cal.get(Calendar.DAY_OF_MONTH))
-    		{
-    			age--;
-    		}
-    	}
-    	
-    	int tmp=age%10;
-    	if(tmp==0 || tmp==5 || tmp==6 || tmp==7 || tmp==8 || tmp==9)
-    		add="лет";
-    	else if(tmp==2 || tmp==3 || tmp==4)
-    		add="года";
-    	else if(tmp==1)
-    		add="год"; 	
-
-    	return String.valueOf(age)+" "+add;
-    }
 	
-    
-    // Получение картинки из Интернета
+    	// Получение картинки из Интернета
     public Drawable grabImageFromUrl(String url)  {
 		try {
 			return Drawable.createFromStream((InputStream)new URL(url).getContent(), "src");
@@ -333,7 +263,6 @@ public class MainActivity extends Activity {
 		}
 		return null;
 	}
-    
     
     /****************************** End Страница пользователя ******************************/
     
