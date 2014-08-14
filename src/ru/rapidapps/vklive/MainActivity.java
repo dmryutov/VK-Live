@@ -51,10 +51,11 @@ public class MainActivity extends Activity {
 	
 		// Массив пользователей
     public ArrayList<User> user;
+    public ArrayList<String> names = new ArrayList<String>();
     
     	// Массив городов
     public ArrayList<City> city;
-    
+
     public Fragment fragment;
     public Drawable draw;
     
@@ -101,7 +102,7 @@ public class MainActivity extends Activity {
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         if (savedInstanceState == null) {
-            displayView(1); // Показ страницы (Новости) при запуске
+            displayView(4); // Показ страницы (Новости) при запуске
         }
         mDrawerList.setOnItemClickListener(new SlideMenuClickListener());
 		
@@ -227,7 +228,6 @@ public class MainActivity extends Activity {
 	
     	// Показ профиля
  	void ShowUserProfile(final long user_id) {
- 		Toast.makeText(getApplicationContext(), String.valueOf(account.user_id), Toast.LENGTH_SHORT).show(); 
  		new Thread() {
              @Override
              public void run() {
@@ -236,8 +236,8 @@ public class MainActivity extends Activity {
          		try {
                  	uid.add(user_id);
              		user = api.getProfiles(uid, null, "sex, bdate, city, country, photo_50, photo_100, photo_200_orig, photo_200, photo_400_orig, photo_max, photo_max_orig, online, online_mobile, domain, has_mobile, contacts, connections, site, education, universities, schools, can_post, can_see_all_posts, can_see_audio, can_write_private_message, status, last_seen, common_count, relation, relatives, counters, screen_name, maiden_name, timezone, occupation, activities, interests, music, movies, tv, books, games, about, quotes", null, null, null);
-                     draw = grabImageFromUrl(user.get(0).photo_200);
-                     cid.add(user.get(0).city);
+                    draw = grabImageFromUrl(user.get(0).photo);
+                    cid.add(user.get(0).city);
  					city = api.getCities(cid);
  				} 
          		catch (Exception e) {
@@ -305,7 +305,7 @@ public class MainActivity extends Activity {
  	 	// Получение картинки из Интернета
      public Drawable grabImageFromUrl(String url) {
 		try {
-			return Drawable.createFromStream((InputStream)new URL(url).getContent(), "src");
+			return Drawable.createFromStream((InputStream) new URL(url).getContent(), "src");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -329,11 +329,17 @@ public class MainActivity extends Activity {
                 	
                 	user = null;
                 	
-            		user = api.getFriends(account.user_id, "first_name, last_name", 0, null, null);
+            		user = api.getFriends(account.user_id, "photo_50, first_name, last_name", 0, 5, "hints", null, null);
                  
-                       
+            		for (int i = 0; i < user.size(); i++) {
+                		names.add(user.get(i).first_name + " " + user.get(i).last_name);
+                	}  
                     
-                    
+            		user = api.getFriends(account.user_id, "photo_50, first_name, last_name", 0, 0, "name", null, null);
+            		names.add("");
+            		for (int i = 0; i < user.size(); i++) {
+                		names.add(user.get(i).first_name + " " + user.get(i).last_name);
+                	}
                     
                     
                     
@@ -350,8 +356,9 @@ public class MainActivity extends Activity {
         public void run() {
 
         	
-        	String[] names = { user.get(0).last_name, user.get(1).last_name, "Петр", "Антон", "Даша", "Борис",
-        		      "Костя", "Игорь", "Анна", "Денис", "Андрей" };
+        	
+        	
+        	
 
 
             // создаем адаптер
@@ -361,11 +368,7 @@ public class MainActivity extends Activity {
             // присваиваем адаптер списку
             ((ListView) fragment.getView().findViewById(R.id.listView1)).setAdapter(adapter);
         	    
-        	    try {
-        			;
-        		} catch (Exception e) {
-        			e.printStackTrace();
-        		}
+        
         	
         }
     };
