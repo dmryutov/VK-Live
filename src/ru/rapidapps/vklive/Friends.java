@@ -20,7 +20,7 @@ public class Friends extends Fragment {
         View rootView = inflater.inflate(R.layout.friends, container, false);
         setupUI();
         
-        // ACTIONS
+        ((MainActivity)getActivity()).ShowFriendList(); // Показ Моей страницы
         
         return rootView; 
     }
