@@ -1,10 +1,6 @@
 package ru.rapidapps.vklive;
 
-import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
 
 import ru.rapidapps.vklive.adapter.NavDrawerListAdapter;
 import ru.rapidapps.vklive.model.NavDrawerItem;
@@ -22,14 +18,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.perm.kate.api.Api;
-import com.perm.kate.api.City;
-import com.perm.kate.api.User;
 
 
 public class MainActivity extends Activity {

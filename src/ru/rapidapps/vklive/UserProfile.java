@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -24,9 +23,10 @@ import com.perm.kate.api.City;
 import com.perm.kate.api.User;
  
 public class UserProfile extends Fragment 
-{
-	private Activity act;
+{	
 	private final Handler handler=new Handler();
+	private Context context;
+	private Long uid;
 	
 	// Массив пользователей
     public ArrayList<User> user;    
@@ -42,20 +42,28 @@ public class UserProfile extends Fragment
 	TextView tv1;
 	ImageView imv1;
      
-    public UserProfile()
+	public UserProfile()
     {
+    	
+    }
+	
+    public UserProfile(Long id)
+    {
+    	uid=id;
     }
      
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.user_profile, container, false);
-        setupUI(); 
         
-    	// Восстановление сохранённой сессии
+        context=((MainActivity)getActivity()).getApplicationContext();
+        
+        setupUI();        
+    	
         account=MainActivity.account;        
         api = MainActivity.api;
         
-        ShowUserProfile(MainActivity.account.user_id); // Показ Моей страницы
+        ShowUserProfile(uid==null?account.user_id:uid); // Показ страницы
         
         return rootView; 
     }
@@ -104,7 +112,7 @@ public class UserProfile extends Fragment
         		}
         		else
         		{
-        			Toast.makeText(act.getApplicationContext(), "Город не найден!", Toast.LENGTH_SHORT).show();
+        			Toast.makeText(context, "Город не найден!", Toast.LENGTH_SHORT).show();
         		}      
         		
         	    ((TextView) getView().findViewById(R.id.user_name)).setText(user.get(0).first_name + " " + user.get(0).last_name);
@@ -120,7 +128,7 @@ public class UserProfile extends Fragment
         	}
     		else 
     		{
-    			Toast.makeText(act.getApplicationContext(), "Пользователь не найден!", Toast.LENGTH_SHORT).show();
+    			Toast.makeText(context, "Пользователь не найден!", Toast.LENGTH_SHORT).show();
     		}
         }
     };
