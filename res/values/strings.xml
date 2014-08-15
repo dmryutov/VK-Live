@@ -36,5 +36,7 @@
      
     <!-- Content Description -->
     <string name="desc_list_item_icon">Item Icon</string>
+    <string name="friend_list_status">Item Icon</string>
+    <string name="friend_list_avatar">Item Icon</string>
 
 </resources>

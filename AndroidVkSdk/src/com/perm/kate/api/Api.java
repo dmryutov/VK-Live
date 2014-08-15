@@ -317,7 +317,7 @@ public class Api {
 
     /*** methods for friends ***/
     //http://vk.com/dev/friends.get
-    public ArrayList<User> getFriends(Long user_id, String fields, Integer lid, String captcha_key, String captcha_sid) throws IOException, JSONException, KException{
+    public ArrayList<User> getFriends(Long user_id, String fields, Integer lid, Integer count, String order, String captcha_key, String captcha_sid) throws IOException, JSONException, KException{
         Params params = new Params("friends.get");
         params.put("fields",fields);
         params.put("user_id",user_id);
@@ -326,7 +326,11 @@ public class Api {
         //сортировка по популярности не даёт запросить друзей из списка
         if(lid==null)
             params.put("order","hints");
-        
+        if order != null
+            params.put("order", order);
+        if count != 0
+            params.put("count", count);
+
         addCaptchaParams(captcha_key, captcha_sid, params);
         JSONObject root = sendRequest(params);
         ArrayList<User> users=new ArrayList<User>();

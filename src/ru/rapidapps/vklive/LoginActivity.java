@@ -39,8 +39,8 @@ public class LoginActivity extends Activity implements OnClickListener{
 		webview = (WebView) findViewById(R.id.webview);
         layout1 = (LinearLayout) findViewById(R.id.layout1);
         layout2 = (RelativeLayout) findViewById(R.id.layout2);
-        layout1.setVisibility(layout1.INVISIBLE);
-        layout2.setVisibility(layout2.VISIBLE);
+        layout1.setVisibility(View.INVISIBLE);
+        layout2.setVisibility(View.VISIBLE);
 		btnSignIn = (Button) findViewById(R.id.btnSignIn);
 		btnSignUp = (Button) findViewById(R.id.btnSignUp);
 		btnSignIn.setOnClickListener(this);
@@ -63,8 +63,8 @@ public class LoginActivity extends Activity implements OnClickListener{
 	/****************************** Begin Авторизация ******************************/
 	
 	private void Authorize() {
-		layout1.setVisibility(layout1.VISIBLE);
-		layout2.setVisibility(layout2.INVISIBLE);
+		layout1.setVisibility(View.VISIBLE);
+		layout2.setVisibility(View.INVISIBLE);
 		webview.getSettings().setJavaScriptEnabled(true);
         webview.clearCache(true); 
         	//Чтобы получать уведомления об окончании загрузки страницы

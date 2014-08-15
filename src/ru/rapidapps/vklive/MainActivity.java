@@ -10,7 +10,6 @@ import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
@@ -25,8 +24,6 @@ import com.perm.kate.api.Api;
 
 public class MainActivity extends Activity {
 
-	
-	
 		//Боковое меню
 	private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
@@ -41,10 +38,7 @@ public class MainActivity extends Activity {
     public static Account account = new Account();
     public static Api api;
 	
-    
-    
     public Fragment fragment;
-    public Drawable draw;
     
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -89,7 +83,7 @@ public class MainActivity extends Activity {
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         if (savedInstanceState == null) {
-            displayView(0); // Показ страницы (Моя страница) при запуске
+            displayView(0); // Показ страницы (Новости) при запуске
         }
         mDrawerList.setOnItemClickListener(new SlideMenuClickListener());
 		
@@ -210,12 +204,6 @@ public class MainActivity extends Activity {
     }
     
     /****************************** End Боковое меню ******************************/
-    
-    /****************************** Begin Страница пользователя ******************************/
-	
-    // Показ профиля    
-    
-    /****************************** End Страница пользователя ******************************/
     
 	/*void logOut() {
 		api = null;

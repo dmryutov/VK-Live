@@ -3,6 +3,7 @@
     android:id="@+id/RelativeLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clickable="true"
     android:orientation="vertical" >
 
     <Space
@@ -62,9 +63,10 @@
 
             <ImageView
                 android:id="@+id/online_mobile"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
                 android:layout_alignBottom="@id/online_status"
+                android:layout_marginBottom="1dp"
                 android:layout_marginEnd="5dp"
                 android:layout_toRightOf="@+id/online_status"
                 android:scaleType="center"
@@ -74,14 +76,72 @@
         </RelativeLayout>
     </LinearLayout>
 
-    <Button
-        android:id="@+id/button1"
+    <HorizontalScrollView
+        android:id="@+id/horizontalScrollView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/linearLayout1" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="78dp"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/friends_but"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Друзья"
+                android:textSize="10sp" />
+
+            <Button
+                android:id="@+id/followers_but"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Подписчики"
+                android:textSize="10sp" />
+
+            <Button
+                android:id="@+id/groups_but"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Группы"
+                android:textSize="10sp" />
+
+            <Button
+                android:id="@+id/photos_but"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Фото"
+                android:textSize="10sp" />
+
+            <Button
+                android:id="@+id/videos_but"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Видео"
+                android:textSize="10sp" />
+
+            <Button
+                android:id="@+id/audios_but"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Аудио"
+                android:textSize="10sp" />
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <ImageView
+        android:id="@+id/info_but"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/linearLayout1"
         android:layout_alignParentRight="true"
-        android:layout_marginBottom="15dp"
-        android:layout_marginRight="16dp"
-        android:text="i" />
+        android:layout_marginBottom="25dp"
+        android:layout_marginRight="25dp"
+        android:src="@drawable/ic_info" />
 
 </RelativeLayout>
