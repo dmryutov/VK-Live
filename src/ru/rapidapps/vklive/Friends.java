@@ -4,16 +4,20 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 
-import ru.rapidapps.vklive.model.FriendListItem;
+import ru.rapidapps.vklive.adapter.ContactsArrayAdapter;
 import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -37,6 +41,8 @@ public class Friends extends Fragment {
 	public ArrayList<Drawable> image_list = new ArrayList<Drawable>();
 
     public Drawable draw;
+    
+    ContactsArrayAdapter adapter;
 	
 	TextView tv1;
 	ImageView imv1;
@@ -63,19 +69,18 @@ public class Friends extends Fragment {
             @Override
             public void run(){
                 try {
-            		user = api.getFriends(account.user_id, "photo_50, first_name, last_name", 0, 5, "hints", null, null);
+            		/*user = api.getFriends(account.user_id, "photo_50, first_name, last_name", 0, 5, "hints", null, null);
             		for (int i = 0; i < user.size(); i++) {
                 		names.add(user.get(i).first_name + " " + user.get(i).last_name);
                 		image_list.add(grabImageFromUrl(user.get(i).photo));
-                	}  
-                    
-            		user = api.getFriends(account.user_id, "photo_50, first_name, last_name", 0, 20, "name", null, null);
-            		names.add("");
+                	} */ 
+            		user = api.getFriends(account.user_id, "photo_50, first_name, last_name, online", 0, 0, "name", null, null);
+            		/*names.add("");
             		image_list.add(grabImageFromUrl(user.get(0).photo));
             		for (int i = 0; i < user.size(); i++) {
                 		names.add(user.get(i).first_name + " " + user.get(i).last_name);
                 		image_list.add(grabImageFromUrl(user.get(i).photo));
-                	}
+                	}*/
 
                     runOnUiThread(successRunnable);
                 } catch (Exception e) {
@@ -93,7 +98,53 @@ public class Friends extends Fragment {
         @Override
         public void run() {
 
-        	FriendListItem adapter = new FriendListItem(context, names, image_list);
+        	
+        	if (user != null) {
+    
+    			
+        		adapter = new ContactsArrayAdapter(context, user);
+    			((ListView) getView().findViewById(R.id.listView1)).setAdapter(adapter);
+    			((ListView) getView().findViewById(R.id.listView1)).setOnItemClickListener(new OnItemClickListener() {
+    				@Override
+    				public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    					/*User us = (User) listView.getItemAtPosition(position);
+    					
+    					helper.WriteDebug("ОТКРЫВАЕМ Контакт " + us.uid);
+    		
+    					Intent intent = new Intent(ContactsActivity.this, ConversationActivity.class);
+    					intent.putExtra("uid", us.uid);
+    					intent.putExtra("name", us.first_name + " " + us.last_name);
+    					startActivity(intent);	
+    					*/
+    				}
+    			});
+    			
+    		
+    			((EditText) getView().findViewById(R.id.contactsSearch)).addTextChangedListener(new TextWatcher() {
+    				@Override
+    				public void onTextChanged(CharSequence s, int start, int before, int count) {
+    					helper.WriteInfo("Ищу: " + s.toString());
+    					adapter.getFilter().filter(s.toString());
+    				}
+
+    				@Override
+    				public void afterTextChanged(Editable s) {
+    					// TODO Auto-generated method stub
+    					
+    				}
+
+    				@Override
+    				public void beforeTextChanged(CharSequence s, int start,
+    						int count, int after) {
+    					// TODO Auto-generated method stub
+    					
+    				}
+    			});	
+    		}
+        	
+        	
+        	
+        	/*FriendListItem adapter = new FriendListItem(context, names, image_list);
         	
         	((ListView) getView().findViewById(R.id.listView1)).setAdapter(adapter);
         	((ListView) getView().findViewById(R.id.listView1)).setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -101,9 +152,16 @@ public class Friends extends Fragment {
         	    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         	    	// OnClick
         	    }
-        	});
+        	});*/
         }
     };
+    
+    
+    
+    
+    
+    
+    
     
 		// Получение картинки из Интернета
     public Drawable grabImageFromUrl(String url) {
