@@ -98,6 +98,7 @@ public class MainActivity extends Activity {
         	api = new Api(account.access_token, getString(R.string.app_id));
 	}
 	
+	
 	/****************************** Begin Боковое меню ******************************/
 	
     private class SlideMenuClickListener implements ListView.OnItemClickListener {

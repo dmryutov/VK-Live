@@ -326,9 +326,9 @@ public class Api {
         //сортировка по популярности не даёт запросить друзей из списка
         if(lid==null)
             params.put("order","hints");
-        if order != null
+        if (order != null)
             params.put("order", order);
-        if count != 0
+        if (count != 0)
             params.put("count", count);
 
         addCaptchaParams(captcha_key, captcha_sid, params);

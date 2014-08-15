@@ -12,6 +12,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="1dp"
+        android:clickable="true"
         android:contentDescription="@string/friend_list_avatar"
         android:src="@drawable/user_placeholder" />
  
@@ -22,17 +23,15 @@
         android:layout_toRightOf="@id/icon"
         android:gravity="center_vertical"
         android:minHeight="?android:attr/listPreferredItemHeightSmall"
-        android:paddingRight="40dp"
         android:textAppearance="?android:attr/textAppearanceListItemSmall" />
 
     <ImageView
         android:id="@+id/status"
         android:layout_width="25dp"
         android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
         android:layout_marginLeft="12dp"
-        android:contentDescription="@string/friend_list_status"
-        android:src="@drawable/ic_online_mobile"
-        android:layout_toRightOf="@id/title"
-        android:layout_centerVertical="true" />
+        android:contentDescription="@string/friend_list_status" />
  
 </RelativeLayout>
