@@ -74,4 +74,14 @@
         </RelativeLayout>
     </LinearLayout>
 
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/linearLayout1"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="15dp"
+        android:layout_marginRight="16dp"
+        android:text="i" />
+
 </RelativeLayout>
