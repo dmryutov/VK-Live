@@ -83,7 +83,7 @@ public class MainActivity extends Activity {
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         if (savedInstanceState == null) {
-            displayView(4); // Показ страницы (Новости) при запуске
+            displayView(0); // Показ страницы (Новости) при запуске
         }
         mDrawerList.setOnItemClickListener(new SlideMenuClickListener());
 		
@@ -97,6 +97,7 @@ public class MainActivity extends Activity {
         else
         	api = new Api(account.access_token, getString(R.string.app_id));
 	}
+	
 	
 	/****************************** Begin Боковое меню ******************************/
 	

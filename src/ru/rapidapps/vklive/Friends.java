@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import ru.rapidapps.vklive.adapter.ContactsArrayAdapter;
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,9 +19,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.perm.kate.api.Api;
 import com.perm.kate.api.User;
@@ -29,9 +28,10 @@ public class Friends extends Fragment {
 	
 	private final Handler handler = new Handler();
 	private Activity context;
+	private Long uid;
 	
 		// Массив пользователей
-    public ArrayList<User> user;
+    public ArrayList<User> friends;
     public ArrayList<String> names = new ArrayList<String>();
 	
 		// Апи
@@ -41,13 +41,16 @@ public class Friends extends Fragment {
 	public ArrayList<Drawable> image_list = new ArrayList<Drawable>();
 
     public Drawable draw;
-    
+    Fragment fragment;
+    ListView list;
     ContactsArrayAdapter adapter;
-	
-	TextView tv1;
-	ImageView imv1;
      
     public Friends(){}
+    
+    public Friends(Long id)
+    {
+    	uid=id;
+    }
      
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -56,15 +59,16 @@ public class Friends extends Fragment {
 		setupUI();
 
 		account = MainActivity.account;
-		api = MainActivity.api;
+		api = MainActivity.api;	
+		list=(ListView) rootView.findViewById((R.id.listView1));
+		
         
-        ShowFriendList(); // Показ списка друзей
+        ShowFriendList(uid == null ? account.user_id : uid); // Показ списка друзей
         
         return rootView; 
     }
     
-		// Показ профиля
-	void ShowFriendList() {
+	void ShowFriendList(final long id) {
 		new Thread(){
             @Override
             public void run(){
@@ -74,7 +78,7 @@ public class Friends extends Fragment {
                 		names.add(user.get(i).first_name + " " + user.get(i).last_name);
                 		image_list.add(grabImageFromUrl(user.get(i).photo));
                 	} */ 
-            		user = api.getFriends(account.user_id, "photo_50, first_name, last_name, online", 0, 0, "name", null, null);
+            		friends = api.getFriends(id, "photo_50, first_name, last_name, online", 0, 0, "name", null, null);
             		/*names.add("");
             		image_list.add(grabImageFromUrl(user.get(0).photo));
             		for (int i = 0; i < user.size(); i++) {
@@ -99,16 +103,19 @@ public class Friends extends Fragment {
         public void run() {
 
         	
-        	if (user != null) {
-    
-    			
-        		adapter = new ContactsArrayAdapter(context, user);
-    			((ListView) getView().findViewById(R.id.listView1)).setAdapter(adapter);
-    			((ListView) getView().findViewById(R.id.listView1)).setOnItemClickListener(new OnItemClickListener() {
+        	if (friends != null) {
+        		adapter = new ContactsArrayAdapter(context, friends);
+        		list.setAdapter(adapter);
+    			list.setOnItemClickListener(new OnItemClickListener() {
     				@Override
     				public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-    					/*User us = (User) listView.getItemAtPosition(position);
+    					User us = (User) list.getItemAtPosition(position);
     					
+    					fragment=new UserProfile(us.uid);
+    					FragmentManager fragmentManager = getFragmentManager();
+    					fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();
+    					
+    					/*
     					helper.WriteDebug("ОТКРЫВАЕМ Контакт " + us.uid);
     		
     					Intent intent = new Intent(ContactsActivity.this, ConversationActivity.class);

@@ -101,11 +101,12 @@ public class ContactsArrayAdapter extends ArrayAdapter<User> implements Filterab
 				holder.name.setText(usr.last_name + " " + usr.first_name);
 			}
 		    
-	        
-		    if (usr.online)
-		    	holder.online.setImageResource(R.drawable.online);
-		    if (usr.online_mobile)
+	        if (usr.online_mobile)
 		    	holder.online.setImageResource(R.drawable.ic_online_mobile);
+	        else if (usr.online)
+		    	holder.online.setImageResource(R.drawable.online);
+		    else
+		    	holder.online.setImageBitmap(null);
 		    	// holder.online.setVisibility(ImageView.VISIBLE);
 		    
 		    imageLoader.DisplayImage(usr.photo, holder.image);

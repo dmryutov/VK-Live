@@ -79,8 +79,9 @@ public class User implements Serializable {
     public int user_photos_count;
     public int user_videos_count;
     public int followers_count;
-    //public int subscriptions_count;
-    //public int online_friends_count;
+    public int subscriptions_count;
+    public int online_friends_count;
+    public int mutual_friends_count;
     public String phone;//for getByPhones
     public int groups_count;
     //relation_partner
@@ -193,10 +194,11 @@ public class User implements Serializable {
                 u.friends_count = object.optInt("friends");
                 u.user_photos_count = object.optInt("user_photos");
                 u.user_videos_count = object.optInt("user_videos");
-                //u.online_friends_count = object.optInt("online_friends");
+                u.online_friends_count = object.optInt("online_friends");
+                u.mutual_friends_count = object.optInt("mutual_friends");
                 u.followers_count = object.optInt("followers");
-                //u.subscriptions_count = object.optInt("subscriptions");
-                u.groups_count = object.optInt("groups");
+                u.subscriptions_count = object.optInt("subscriptions");
+                u.groups_count = object.optInt("groups");                
             }
         }
         if(!o.isNull("relation_partner")) {
