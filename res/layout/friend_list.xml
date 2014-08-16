@@ -12,6 +12,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="1dp"
+        android:clickable="true"
         android:contentDescription="@string/friend_list_avatar"
         android:src="@drawable/user_placeholder" />
  
