@@ -9,6 +9,7 @@ import java.util.Collection;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,11 +21,14 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.perm.kate.api.Api;
 import com.perm.kate.api.City;
+import com.perm.kate.api.Photo;
 import com.perm.kate.api.User;
 
 public class UserProfile extends Fragment implements OnClickListener
@@ -36,11 +40,12 @@ public class UserProfile extends Fragment implements OnClickListener
 
 	public User user;
 	public City city;
+	public ArrayList<Drawable> photos;
 
 	public Drawable draw;
 	
 	public Fragment fragment;
-
+	
 		//Апи
 	public static Account account = new Account();
 	public static Api api;
@@ -59,13 +64,10 @@ public class UserProfile extends Fragment implements OnClickListener
 		context = ((MainActivity) getActivity()).getApplicationContext();		
 		account = MainActivity.account;
 		api = MainActivity.api;
-		
-				
+	
 		rootView.findViewById(R.id.friends_but).setOnClickListener(this);
-	   
-	        
-	    	
-		
+		rootView.findViewById(R.id.info_but).setOnClickListener(this);
+
 		ShowUserProfile(uid == null ? account.user_id : uid); // Показ страницы
 
 		return rootView;
@@ -78,15 +80,16 @@ public class UserProfile extends Fragment implements OnClickListener
 			@Override
 			public void run() 
 			{
-				Collection cid = new ArrayList();
-				Collection uid = new ArrayList();
+				Collection<Long> cid = new ArrayList<Long>();
+				Collection<Long> uid = new ArrayList<Long>();
 				try 
 				{
 					uid.add(id);
 					user = api.getProfiles(uid, null, "sex, bdate, city, country, photo_50, photo_100, photo_200_orig, photo_200, photo_400_orig, photo_max, photo_max_orig, online, online_mobile, domain, has_mobile, contacts, connections, site, education, universities, schools, can_post, can_see_all_posts, can_see_audio, can_write_private_message, status, last_seen, common_count, relation, relatives, counters, screen_name, maiden_name, timezone, occupation, activities, interests, music, movies, tv, books, games, about, quotes, common_count, followers_count, counters", null, null, null).get(0);
 					draw = grabImageFromUrl(user.photo_200);
-					cid.add(user.city);
+					cid.add((long)user.city);
 					city = api.getCities(cid).get(0);
+					photos=grabImagePreviewsFromUrl(api.getAllPhotos(user.uid, 0, null, false));					
 				} catch (Exception e) 
 				{
 					e.printStackTrace();
@@ -106,57 +109,8 @@ public class UserProfile extends Fragment implements OnClickListener
 		@Override
 		public void run()
 		{			
-			if (user != null) 
-			{
-				if (city != null)
-				{
-					if(getAgeFromBDay(user.birthdate)!=null)
-					{
-						((TextView) getView().findViewById(R.id.age_city)).setText(getAgeFromBDay(user.birthdate) + ", " + city.name);
-					}
-					else
-					{
-						((TextView) getView().findViewById(R.id.age_city)).setText("Возраст скрыт" + ", " + city.name);
-					}				
-				} 
-				else 
-				{
-					if(getAgeFromBDay(user.birthdate) != null)
-					{
-						((TextView) getView().findViewById(R.id.age_city)).setText(getAgeFromBDay(user.birthdate) + ", " + "Город скрыт");
-					}
-					else
-					{
-						((TextView) getView().findViewById(R.id.age_city)).setText("Возраст и город скрыты");
-					}
-				}			
-				
-				((Button) getView().findViewById(R.id.mutual_friends_but)).setVisibility(user.uid==account.user_id ? View.GONE : View.VISIBLE);
-								
-				((TextView) getView().findViewById(R.id.user_name)).setText(user.first_name + " " + user.last_name);
-				((TextView) getView().findViewById(R.id.online_status)).setText(user.online ? "Online" : "Offline");
-				((Button) getView().findViewById(R.id.friends_but)).setText(setFriendsText());
-				
-				((Button) getView().findViewById(R.id.mutual_friends_but)).setText(setMutualFriendsText());
-				
-				((Button) getView().findViewById(R.id.followers_but)).setText(setFollowersText());
-				((Button) getView().findViewById(R.id.groups_but)).setText(setGroupsText());
-				((Button) getView().findViewById(R.id.photos_but)).setText(setPhotosText());
-				((Button) getView().findViewById(R.id.videos_but)).setText(setVideosText());
-				((Button) getView().findViewById(R.id.audios_but)).setText(setAudiosText());
-				try 
-				{					
-					((ImageView) getView().findViewById(R.id.online_mobile)).setVisibility(user.online_mobile ? View.VISIBLE : View.GONE);
-					((ImageView) getView().findViewById(R.id.profile_pic)).setImageDrawable(draw);
-				} catch (Exception e) 
-				{
-					e.printStackTrace();
-				}
-			} 
-			else
-			{
-				Toast.makeText(context, "Пользователь не найден", Toast.LENGTH_SHORT).show();
-			}
+			setPhotosBar();			
+			setTextsAndVis();
 		}
 	};
 	
@@ -170,11 +124,85 @@ public class UserProfile extends Fragment implements OnClickListener
 	    	case R.id.friends_but:
 	    		fragment=new Friends(user.uid);	    	      	
 	    		break;
+	    	case R.id.info_but:
+	    		fragment=new UserInfo(user.uid);
+	    		break;	    	
 	    }
 	    FragmentManager fragmentManager = getFragmentManager();
 	    fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();
 	}	
-	   
+	  
+	//Скроллбар фоток
+	private void setPhotosBar()
+	{
+		LinearLayout lv = (LinearLayout) getView().findViewById (R.id.preview_layout);
+		LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT);
+		lp.setMargins(5, 5, 5, 5);
+		for (int i=0 ; i<photos.size(); i++)
+		{				
+		   ImageView iv = new ImageView (context);		   
+		   
+		   iv.setBackground(photos.get(i)); 
+		   iv.setScaleType(ScaleType.FIT_XY);
+		   
+		   iv.setLayoutParams(lp);	
+		   	   
+		   lv.addView(iv);
+		}
+	}
+	
+	//Кол-во в полях + проверки на видимость
+	private void setTextsAndVis()
+	{
+		String age,city_name;
+		if (user != null) 
+		{
+			if (city != null)
+			{
+				city_name=city.name;
+			}
+			else
+			{				
+				city_name="";
+			}
+			if (user.birthdate != null)
+			{
+				age=getAgeFromBDay(user.birthdate);
+			}
+			else
+			{
+				age="";
+			}
+			((TextView) getView().findViewById(R.id.age_city)).setText(age + ", " + city_name);
+			
+			((Button) getView().findViewById(R.id.mutual_friends_but)).setVisibility(user.uid==account.user_id ? View.GONE : View.VISIBLE);
+							
+			((TextView) getView().findViewById(R.id.user_name)).setText(user.first_name + " " + user.last_name);
+			((TextView) getView().findViewById(R.id.online_status)).setText(user.online ? "Online" : "Offline");
+			((Button) getView().findViewById(R.id.friends_but)).setText(setFriendsText());
+			
+			((Button) getView().findViewById(R.id.mutual_friends_but)).setText(setMutualFriendsText());
+			
+			((Button) getView().findViewById(R.id.followers_but)).setText(setFollowersText());
+			((Button) getView().findViewById(R.id.groups_but)).setText(setGroupsText());
+			((Button) getView().findViewById(R.id.photos_but)).setText(setPhotosText());
+			((Button) getView().findViewById(R.id.videos_but)).setText(setVideosText());
+			((Button) getView().findViewById(R.id.audios_but)).setText(setAudiosText());
+			try 
+			{					
+				((ImageView) getView().findViewById(R.id.online_mobile)).setVisibility(user.online_mobile ? View.VISIBLE : View.GONE);
+				((ImageView) getView().findViewById(R.id.profile_pic)).setImageDrawable(draw);
+			} catch (Exception e) 
+			{
+				e.printStackTrace();
+			}
+		} 
+		else
+		{
+			Toast.makeText(context, "Пользователь не найден", Toast.LENGTH_SHORT).show();
+		}
+	}
+	
 	
 	/***************  BEGIN Функции для подсчета кол-ва чего-нибудь BEGIN *********************/
 	
@@ -338,5 +366,20 @@ public class UserProfile extends Fragment implements OnClickListener
 		}
 		return null;
 	}
-
+	
+	ArrayList<Drawable> grabImagePreviewsFromUrl(ArrayList<Photo> ph) 
+	{
+		ArrayList<Drawable> draw=new ArrayList<Drawable>();
+		for(int i=0;i<ph.size();i++)
+		{
+			try 
+			{
+				draw.add(Drawable.createFromStream((InputStream) new URL(ph.get(i).src_big).getContent(), "src"));
+			} catch (Exception e) 
+			{
+				e.printStackTrace();
+			}
+		}
+		return draw;
+	}	
 }
