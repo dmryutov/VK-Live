@@ -83,7 +83,7 @@ public class MainActivity extends Activity {
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         if (savedInstanceState == null) {
-            displayView(0); // Показ страницы (Новости) при запуске
+            displayView(4); // Показ страницы (Новости) при запуске
         }
         mDrawerList.setOnItemClickListener(new SlideMenuClickListener());
 		
