@@ -7,15 +7,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Locale;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
+import ru.rapidapps.vklive.dialog.StatusDialog;
+import android.annotation.SuppressLint;
+import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnDismissListener;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,9 +20,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,18 +32,15 @@ public class UserInfo extends Fragment implements OnClickListener
 {
 	private final Handler handler = new Handler();
 	final int DIALOG=1;
-	private Context context;
-	private Long uid;
-
-	public User user;
-	public City city;
+	Context context;
+	Long uid;
+	User user;
+	City city;
+	Drawable draw;
+	DialogFragment dialog;
 	public ArrayList<Drawable> photos;
-
-	public Drawable draw;
-	
-	public Fragment fragment;
-	private RelativeLayout lView;
-	Dialog dialog;
+		
+	public static View rootView;
 		//Апи
 	public static Account account = new Account();
 	public static Api api;
@@ -60,20 +52,26 @@ public class UserInfo extends Fragment implements OnClickListener
 		uid = id;
 	}
 	
+
+	  
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) 
 	{
-		View rootView = inflater.inflate(R.layout.user_info, container, false);
+		rootView = inflater.inflate(R.layout.user_info, container, false);
 		context = ((MainActivity) getActivity()).getApplicationContext();		
 		account = MainActivity.account;
-		api = MainActivity.api;
-
-		ShowUserInfo(uid == null ? account.user_id : uid); // Показ страницы
-		lView =(RelativeLayout) inflater.inflate(R.layout.status_dialog, null);
+		api = MainActivity.api;		
+       
+		dialog=StatusDialog.newInstance();
 		
+		rootView.findViewById(R.id.edit_status_btn).setOnClickListener(this);		
+		
+		ShowUserInfo(uid == null ? account.user_id : uid); // Показ страницы		
+
 		return rootView;
 	}
 
+	
 	void ShowUserInfo(final long id) 
 	{
 		new Thread()
@@ -113,22 +111,19 @@ public class UserInfo extends Fragment implements OnClickListener
 		}
 	};
 	
-	
 	@Override
 	public void onClick(View v)
 	{
 		switch(v.getId())
 		{
-			case R.id.edit_status:
-				((Activity) context).showDialog(DIALOG);
-				break;
-			
-				
+			case R.id.edit_status_btn:
+				dialog.show(getFragmentManager(), "dialog_status");
+				break;	
+			default:				
+				break;				
 		}
-		
 	}
-	
-	
+		
 	private void setTexts()
 	{
 		String city_name,age;
@@ -187,7 +182,7 @@ public class UserInfo extends Fragment implements OnClickListener
 			{					
 				((ImageView) getView().findViewById(R.id.online_mobile)).setVisibility(user.online_mobile ? View.VISIBLE : View.GONE);
 				((ImageView) getView().findViewById(R.id.profile_pic)).setImageDrawable(draw);
-				((TextView) getView().findViewById(R.id.bday_tb)).setText("День рождения:\n"+user.birthdate+"\n"+new SimpleDateFormat("dd MMMM yyyy",myDateFormatSymbols).format(new SimpleDateFormat("dd.MM.yyyy").parse(user.birthdate)));
+				((TextView) getView().findViewById(R.id.bday_tb)).setText("День рождения:\n"+myDateFormat().format(new SimpleDateFormat("dd.MM.yyyy").parse(user.birthdate)));
 			} catch (Exception e) 
 			{
 				e.printStackTrace();
@@ -198,44 +193,30 @@ public class UserInfo extends Fragment implements OnClickListener
 			Toast.makeText(context, "Пользователь не найден", Toast.LENGTH_SHORT).show();
 		}
 	}
-		
-	protected Dialog onCreateDialog(int id) 
-	{
-		if(id==DIALOG)
-		{
-		    AlertDialog.Builder adb = new AlertDialog.Builder(context);
-		    adb.setTitle("Изменить статус");	    
-		    adb.setView(lView);	
-		    adb.setPositiveButton("Изменить статус", null);
-		    dialog=adb.create();
-		    dialog.setOnDismissListener(new OnDismissListener()
-		    {
-				@Override
-				public void onDismiss(DialogInterface dialog)
-				{
-					EditText text=(EditText)getView().findViewById(R.id.text_status);
-				    ((TextView) getView().findViewById(R.id.edit_status)).setText(text.getText().toString());			
-				}
-		    }); 
-		    return dialog;
-		}   
-	    return onCreateDialog(id);
-	  }
 	
-	private static DateFormatSymbols myDateFormatSymbols = new DateFormatSymbols()
+	public static void setUserStatus(String text)
 	{
-        /**
-		 * 
-		 */
-		private static final long serialVersionUID = 4027506977854030842L;
-
-		@Override
-        public String[] getMonths()
-        {
-            return new String[]{"января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"};
-        }
-        
-    };
+		if(text!=null)
+		{
+			((TextView)rootView.findViewById(R.id.edit_status_btn)).setText(text);
+			try
+			{
+				api.setStatus(text);
+			} catch (Exception e)
+			{				
+				e.printStackTrace();
+			}
+		}
+	}	
+	
+	private SimpleDateFormat myDateFormat()
+	{
+		String[] str={"января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"};
+		DateFormatSymbols symb=new DateFormatSymbols();
+		symb.setMonths(str);
+		SimpleDateFormat dateForm=new SimpleDateFormat("dd MM yyyy",symb);
+		return dateForm;		
+    }
 	
 	public String getAgeFromBDay(String bday) 
 	{		

@@ -7,9 +7,8 @@ import java.util.Calendar;
 import java.util.Collection;
 
 import android.app.Fragment;
-import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -127,9 +126,12 @@ public class UserProfile extends Fragment implements OnClickListener
 	    	case R.id.info_but:
 	    		fragment=new UserInfo(user.uid);
 	    		break;	    	
-	    }
-	    FragmentManager fragmentManager = getFragmentManager();
-	    fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();
+	    }	    
+	    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+	    transaction.replace(R.id.frame_container, fragment);
+	    transaction.addToBackStack(null);
+	    transaction.setTransition(0);
+	    transaction.commit();
 	}	
 	  
 	//Скроллбар фоток
