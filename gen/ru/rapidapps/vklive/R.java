@@ -73,8 +73,12 @@ public final class R {
         public static final int RelativeLayout2=0x7f0a0017;
         public static final int RelativeLayout3=0x7f0a0023;
         public static final int Space1=0x7f0a0024;
-        public static final int action_settings=0x7f0a002e;
+        public static final int action_settings=0x7f0a0032;
         public static final int age_city=0x7f0a001a;
+        public static final int all_photo_bt=0x7f0a0030;
+        public static final int all_photo_count=0x7f0a002f;
+        public static final int all_photos=0x7f0a002d;
+        public static final int all_photos_ic=0x7f0a0031;
         public static final int audios_but=0x7f0a002b;
         public static final int bday_tb=0x7f0a001e;
         public static final int btnSignIn=0x7f0a0010;
@@ -92,7 +96,6 @@ public final class R {
         public static final int friends_but=0x7f0a0026;
         public static final int groups_but=0x7f0a0028;
         public static final int horizontalScrollView1=0x7f0a0025;
-        public static final int horizontalScrollView2=0x7f0a002d;
         public static final int icon=0x7f0a0004;
         public static final int info_but=0x7f0a002c;
         public static final int layout1=0x7f0a000c;
@@ -104,6 +107,7 @@ public final class R {
         public static final int mutual_friends_but=0x7f0a0009;
         public static final int online_mobile=0x7f0a001b;
         public static final int online_status=0x7f0a0019;
+        public static final int photo_preview=0x7f0a002e;
         public static final int photos_but=0x7f0a0029;
         public static final int preview_layout=0x7f0a000b;
         public static final int profile_pic=0x7f0a0016;

@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Locale;
 
 import ru.rapidapps.vklive.dialog.StatusDialog;
 import android.annotation.SuppressLint;
@@ -20,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -129,6 +131,14 @@ public class UserInfo extends Fragment implements OnClickListener
 		String city_name,age;
 		if (user != null) 
 		{
+			if(user.status!=null)
+			{
+				((Button) getView().findViewById(R.id.edit_status_btn)).setText(user.status);
+			}
+			else
+			{
+				((Button) getView().findViewById(R.id.edit_status_btn)).setText("»зменить статус");
+			}
 			if(user.faculty_name!=null)
 			{
 				((TextView) getView().findViewById(R.id.faculty_tb)).setText("‘акультет:\n"+user.faculty_name);
@@ -182,7 +192,7 @@ public class UserInfo extends Fragment implements OnClickListener
 			{					
 				((ImageView) getView().findViewById(R.id.online_mobile)).setVisibility(user.online_mobile ? View.VISIBLE : View.GONE);
 				((ImageView) getView().findViewById(R.id.profile_pic)).setImageDrawable(draw);
-				((TextView) getView().findViewById(R.id.bday_tb)).setText("ƒень рождени€:\n"+myDateFormat().format(new SimpleDateFormat("dd.MM.yyyy").parse(user.birthdate)));
+				((TextView) getView().findViewById(R.id.bday_tb)).setText("ƒень рождени€:\n"+myDateFormat().format(new SimpleDateFormat("dd.MM.yyyy",Locale.ROOT).parse(user.birthdate)));
 			} catch (Exception e) 
 			{
 				e.printStackTrace();
@@ -209,12 +219,13 @@ public class UserInfo extends Fragment implements OnClickListener
 		}
 	}	
 	
+	@SuppressLint("SimpleDateFormat")
 	private SimpleDateFormat myDateFormat()
 	{
 		String[] str={"€нвар€", "феврал€", "марта", "апрел€", "ма€", "июн€", "июл€", "августа", "сент€бр€", "окт€бр€", "но€бр€", "декабр€"};
 		DateFormatSymbols symb=new DateFormatSymbols();
 		symb.setMonths(str);
-		SimpleDateFormat dateForm=new SimpleDateFormat("dd MM yyyy",symb);
+		SimpleDateFormat dateForm=new SimpleDateFormat("dd MMMM yyyy",symb);
 		return dateForm;		
     }
 	

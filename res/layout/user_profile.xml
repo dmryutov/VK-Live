@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/RelativeLayout3"
+<RelativeLayout android:id="@+id/RelativeLayout3"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clickable="true"
-    android:orientation="vertical" >
+    android:orientation="vertical" xmlns:android="http://schemas.android.com/apk/res/android">
 
     <Space
         android:id="@+id/Space1"
@@ -75,7 +74,6 @@
                 android:scaleType="center"
                 android:src="@drawable/ic_online_mobile"
                 android:visibility="visible" />
-
         </RelativeLayout>
     </LinearLayout>
 
@@ -140,7 +138,6 @@
                 android:layout_height="wrap_content"
                 android:text="Аудио"
                 android:textSize="10sp" />
-
         </LinearLayout>
     </HorizontalScrollView>
 
@@ -156,20 +153,53 @@
         android:scaleType="center"
         android:src="@drawable/ic_info" />
 
+    <LinearLayout
+        android:id="@+id/all_photos"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/horizontalScrollView1"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:clickable="true" >
+
+        <TextView
+            android:id="@+id/all_photo_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:text="Фото" />
+
+        <TextView
+            android:id="@+id/all_photo_bt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:text="Все" />
+
+        <ImageView
+            android:id="@+id/all_photos_ic"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@android:drawable/ic_menu_send" />
+    </LinearLayout>
+
     <HorizontalScrollView
-        android:id="@+id/horizontalScrollView2"
+        android:id="@+id/photo_preview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/horizontalScrollView1" >
+        android:layout_below="@+id/all_photos"
+        android:layout_marginLeft="5dp" >
 
         <LinearLayout
             android:id="@+id/preview_layout"
             android:layout_width="wrap_content"
             android:layout_height="100dp"
             android:orientation="horizontal" >
-            
         </LinearLayout>
     </HorizontalScrollView>
-   
+
 </RelativeLayout>

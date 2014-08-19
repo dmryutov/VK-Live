@@ -38,8 +38,12 @@ int id RelativeLayout1 0x7f0a0001
 int id RelativeLayout2 0x7f0a0017
 int id RelativeLayout3 0x7f0a0023
 int id Space1 0x7f0a0024
-int id action_settings 0x7f0a002e
+int id action_settings 0x7f0a0032
 int id age_city 0x7f0a001a
+int id all_photo_bt 0x7f0a0030
+int id all_photo_count 0x7f0a002f
+int id all_photos 0x7f0a002d
+int id all_photos_ic 0x7f0a0031
 int id audios_but 0x7f0a002b
 int id bday_tb 0x7f0a001e
 int id btnSignIn 0x7f0a0010
@@ -57,7 +61,6 @@ int id frame_container 0x7f0a0012
 int id friends_but 0x7f0a0026
 int id groups_but 0x7f0a0028
 int id horizontalScrollView1 0x7f0a0025
-int id horizontalScrollView2 0x7f0a002d
 int id icon 0x7f0a0004
 int id info_but 0x7f0a002c
 int id layout1 0x7f0a000c
@@ -69,6 +72,7 @@ int id list_slidermenu 0x7f0a0013
 int id mutual_friends_but 0x7f0a0009
 int id online_mobile 0x7f0a001b
 int id online_status 0x7f0a0019
+int id photo_preview 0x7f0a002e
 int id photos_but 0x7f0a0029
 int id preview_layout 0x7f0a000b
 int id profile_pic 0x7f0a0016

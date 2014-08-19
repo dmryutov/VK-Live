@@ -20,7 +20,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -66,6 +65,7 @@ public class UserProfile extends Fragment implements OnClickListener
 	
 		rootView.findViewById(R.id.friends_but).setOnClickListener(this);
 		rootView.findViewById(R.id.info_but).setOnClickListener(this);
+		rootView.findViewById(R.id.all_photos).setOnClickListener(this);
 
 		ShowUserProfile(uid == null ? account.user_id : uid); // Показ страницы
 
@@ -111,8 +111,7 @@ public class UserProfile extends Fragment implements OnClickListener
 			setPhotosBar();			
 			setTextsAndVis();
 		}
-	};
-	
+	};	
 
 	//Обработчик нажатий на кнопки скроллбара
 	@Override
@@ -122,7 +121,7 @@ public class UserProfile extends Fragment implements OnClickListener
 	    {
 	    	case R.id.friends_but:
 	    		fragment=new Friends(user.uid);	    	      	
-	    		break;
+	    		break;	    	
 	    	case R.id.info_but:
 	    		fragment=new UserInfo(user.uid);
 	    		break;	    	
@@ -138,18 +137,19 @@ public class UserProfile extends Fragment implements OnClickListener
 	private void setPhotosBar()
 	{
 		LinearLayout lv = (LinearLayout) getView().findViewById (R.id.preview_layout);
-		LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT);
-		lp.setMargins(5, 5, 5, 5);
+		LinearLayout.LayoutParams lp;		
+		ImageView iv;		
+		
+		int height=lv.getLayoutParams().height;
+			   
 		for (int i=0 ; i<photos.size(); i++)
-		{				
-		   ImageView iv = new ImageView (context);		   
-		   
-		   iv.setBackground(photos.get(i)); 
-		   iv.setScaleType(ScaleType.FIT_XY);
-		   
-		   iv.setLayoutParams(lp);	
-		   	   
-		   lv.addView(iv);
+		{
+			iv = new ImageView (context);
+			lp=new LinearLayout.LayoutParams(photos.get(i).getIntrinsicWidth()*height/photos.get(i).getIntrinsicHeight(),height);
+			lp.setMargins(5, 0, 5, 0);
+			iv.setBackground(photos.get(i));
+			lv.addView(iv);
+			iv.setLayoutParams(lp);
 		}
 	}
 	
@@ -165,7 +165,7 @@ public class UserProfile extends Fragment implements OnClickListener
 			}
 			else
 			{				
-				city_name="";
+				city_name="Город скрыт";
 			}
 			if (user.birthdate != null)
 			{
@@ -173,23 +173,80 @@ public class UserProfile extends Fragment implements OnClickListener
 			}
 			else
 			{
-				age="";
+				age="Возраст скрыт";
 			}
-			((TextView) getView().findViewById(R.id.age_city)).setText(age + ", " + city_name);
+			if(user.friends_count!=0)
+			{
+				((Button) getView().findViewById(R.id.friends_but)).setText(setFriendsText());
+				((Button) getView().findViewById(R.id.friends_but)).setVisibility(View.VISIBLE);
+			}
+			else
+			{
+				((Button) getView().findViewById(R.id.friends_but)).setVisibility(View.GONE);
+			}	
+			if(user.mutual_friends_count!=0 && user.uid!=account.user_id)
+			{
+				((Button) getView().findViewById(R.id.mutual_friends_but)).setText(setMutualFriendsText());
+				((Button) getView().findViewById(R.id.mutual_friends_but)).setVisibility(View.VISIBLE);
+			}
+			else
+			{
+				((Button) getView().findViewById(R.id.mutual_friends_but)).setVisibility(View.GONE);
+			}			
+			if(user.followers_count!=0)
+			{
+				((Button) getView().findViewById(R.id.followers_but)).setText(setFollowersText());
+				((Button) getView().findViewById(R.id.followers_but)).setVisibility(View.VISIBLE);
+			}
+			else
+			{
+				((Button) getView().findViewById(R.id.followers_but)).setVisibility(View.GONE);
+			}	
+			if(user.groups_count!=0)
+			{
+				((Button) getView().findViewById(R.id.groups_but)).setText(setGroupsText());
+				((Button) getView().findViewById(R.id.groups_but)).setVisibility(View.VISIBLE);
+			}
+			else
+			{
+				((Button) getView().findViewById(R.id.groups_but)).setVisibility(View.GONE);
+			}
+			if(user.user_photos_count!=0)
+			{
+				((TextView)getView().findViewById(R.id.all_photo_count)).setText(String.valueOf(user.user_photos_count)+" фото");
+				((Button) getView().findViewById(R.id.photos_but)).setText(setPhotosText());
+				((Button) getView().findViewById(R.id.photos_but)).setVisibility(View.VISIBLE);
+			}
+			else
+			{
+				((Button) getView().findViewById(R.id.photos_but)).setVisibility(View.GONE);
+				getView().findViewById(R.id.all_photos).setVisibility(View.GONE);
+				getView().findViewById(R.id.photo_preview).setVisibility(View.GONE);
+				
+			}	
+			if(user.videos_count!=0)
+			{
+				((Button) getView().findViewById(R.id.videos_but)).setText(setVideosText());
+				((Button) getView().findViewById(R.id.videos_but)).setVisibility(View.VISIBLE);
+			}
+			else
+			{
+				((Button) getView().findViewById(R.id.videos_but)).setVisibility(View.GONE);
+			}	
+			if(user.videos_count!=0)
+			{
+				((Button) getView().findViewById(R.id.audios_but)).setText(setAudiosText());
+				((Button) getView().findViewById(R.id.audios_but)).setVisibility(View.VISIBLE);
+			}
+			else
+			{
+				((Button) getView().findViewById(R.id.audios_but)).setVisibility(View.GONE);
+			}
 			
-			((Button) getView().findViewById(R.id.mutual_friends_but)).setVisibility(user.uid==account.user_id ? View.GONE : View.VISIBLE);
-							
+			((TextView) getView().findViewById(R.id.age_city)).setText(age + ", " + city_name);
 			((TextView) getView().findViewById(R.id.user_name)).setText(user.first_name + " " + user.last_name);
 			((TextView) getView().findViewById(R.id.online_status)).setText(user.online ? "Online" : "Offline");
-			((Button) getView().findViewById(R.id.friends_but)).setText(setFriendsText());
 			
-			((Button) getView().findViewById(R.id.mutual_friends_but)).setText(setMutualFriendsText());
-			
-			((Button) getView().findViewById(R.id.followers_but)).setText(setFollowersText());
-			((Button) getView().findViewById(R.id.groups_but)).setText(setGroupsText());
-			((Button) getView().findViewById(R.id.photos_but)).setText(setPhotosText());
-			((Button) getView().findViewById(R.id.videos_but)).setText(setVideosText());
-			((Button) getView().findViewById(R.id.audios_but)).setText(setAudiosText());
 			try 
 			{					
 				((ImageView) getView().findViewById(R.id.online_mobile)).setVisibility(user.online_mobile ? View.VISIBLE : View.GONE);
@@ -359,9 +416,9 @@ public class UserProfile extends Fragment implements OnClickListener
 		// Получение картинки из Интернета
 	public Drawable grabImageFromUrl(String url) 
 	{
-		try 
+		try
 		{
-			return Drawable.createFromStream((InputStream) new URL(url).getContent(), "src");
+			return Drawable.createFromStream((InputStream) new URL(url).getContent(),"src");
 		} catch (Exception e) 
 		{
 			e.printStackTrace();
@@ -374,7 +431,7 @@ public class UserProfile extends Fragment implements OnClickListener
 		ArrayList<Drawable> draw=new ArrayList<Drawable>();
 		for(int i=0;i<ph.size();i++)
 		{
-			try 
+			try
 			{
 				draw.add(Drawable.createFromStream((InputStream) new URL(ph.get(i).src_big).getContent(), "src"));
 			} catch (Exception e) 
@@ -383,5 +440,5 @@ public class UserProfile extends Fragment implements OnClickListener
 			}
 		}
 		return draw;
-	}	
+	}
 }
