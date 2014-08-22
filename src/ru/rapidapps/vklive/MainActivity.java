@@ -137,7 +137,7 @@ public class MainActivity extends Activity {
             fragment = new Videos();
             break;
         case 8:
-            fragment = new Music();
+            fragment = new Audios();
             break;
         case 9:
             fragment = new Bookmarks();

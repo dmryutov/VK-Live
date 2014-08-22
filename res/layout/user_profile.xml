@@ -23,7 +23,7 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_margin="5dp"
-            android:src="@drawable/counter_bg" />
+            android:src="@drawable/user_placeholder" />
 
         <RelativeLayout
             android:id="@+id/RelativeLayout2"

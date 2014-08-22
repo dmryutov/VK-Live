@@ -19,7 +19,7 @@ public class FriendListItem extends ArrayAdapter<String> {
 
 	public FriendListItem(Activity context, ArrayList<String> web, ArrayList<Drawable> imageId) {
 	//public FriendListItem(Activity context, String[] web, Drawable[] imageId) {
-		super(context, R.layout.friend_list, web);
+		super(context, R.layout.friend_list_item, web);
 		this.context = context;
 		this.web = web;
 		this.imageId = imageId;
@@ -28,7 +28,7 @@ public class FriendListItem extends ArrayAdapter<String> {
 	@Override
 	public View getView(int position, View view, ViewGroup parent) {
 		LayoutInflater inflater = context.getLayoutInflater();
-		View rowView = inflater.inflate(R.layout.friend_list, null, true);
+		View rowView = inflater.inflate(R.layout.friend_list_item, null, true);
 		TextView txtTitle = (TextView) rowView.findViewById(R.id.title);
 		ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
 		txtTitle.setText(web.get(position));

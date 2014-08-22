@@ -31,10 +31,9 @@ public class ImageLoader {
 		executorService = Executors.newFixedThreadPool(2);
 	}
 
-	final int stub_id = R.drawable.attach_pressed;
+	final int stub_id = R.drawable.user_placeholder;
 
 	public void DisplayImage(String url, ImageView imageView) {
-		//helper.WriteDebug("draw:" + url);
 		imageViews.put(imageView, url);
 		Bitmap bitmap = memoryCache.get(url);
 		if (bitmap != null) {
@@ -60,7 +59,6 @@ public class ImageLoader {
 
 		// from web
 		try {
-			helper.WriteDebug("start from web: " + url);
 			Bitmap bitmap = null;
 			URL imageUrl = new URL(url);
 			HttpURLConnection conn = (HttpURLConnection) imageUrl.openConnection();
@@ -72,8 +70,7 @@ public class ImageLoader {
 			helper.CopyStream(is, os);
 			os.close();
 			bitmap = decodeFile(f);
-			helper.WriteDebug("end from web: " + url);
-			bitmap = ImageHelper.getRoundedCornerBitmap(bitmap, 3);
+			bitmap = ImageHelper.getRoundedCornerBitmap(bitmap, 10);
 			return bitmap;
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -165,8 +162,7 @@ public class ImageLoader {
 			if (imageViewReused(photoToLoad))
 				return;
 			if (bitmap != null)
-				photoToLoad.imageView.setImageBitmap(ImageHelper
-						.getRoundedCornerBitmap(bitmap, 10));
+				photoToLoad.imageView.setImageBitmap(ImageHelper.getRoundedCornerBitmap(bitmap, 10));
 			else
 				photoToLoad.imageView.setImageResource(stub_id);
 		}

@@ -1,10 +1,9 @@
 package ru.rapidapps.vklive;
 
-import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
 
 import ru.rapidapps.vklive.adapter.ContactsArrayAdapter;
+import ru.rapidapps.vklive.adapter.ContactsOnlineArrayAdapter;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -20,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TabHost;
 
 import com.perm.kate.api.Api;
 import com.perm.kate.api.User;
@@ -29,9 +29,10 @@ public class Friends extends Fragment {
 	private final Handler handler = new Handler();
 	private Activity context;
 	private Long uid;
+	public int favorite_user_count;
 	
 		// Массив пользователей
-    public ArrayList<User> friends;
+    public ArrayList<User> friends, online_friends;
     public ArrayList<String> names = new ArrayList<String>();
 	
 		// Апи
@@ -42,26 +43,31 @@ public class Friends extends Fragment {
 
     public Drawable draw;
     Fragment fragment;
-    ListView list;
-    ContactsArrayAdapter adapter;
+    ListView list_all, list_online;
+    ContactsArrayAdapter adapter_all;
+    ContactsOnlineArrayAdapter adapter_online;
+    
+    TabHost tabHost;
      
     public Friends(){}
     
-    public Friends(Long id)
-    {
-    	uid=id;
+    public Friends(Long id) {
+    	uid = id;
     }
      
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.friends, container, false);
+        View rootView = inflater.inflate(R.layout.friend_list, container, false);
         context = ((MainActivity) getActivity());
-		setupUI();
-
+        list_all = (ListView) rootView.findViewById((R.id.listView1));
+		list_online = (ListView) rootView.findViewById((R.id.listView2));
+	
 		account = MainActivity.account;
-		api = MainActivity.api;	
-		list=(ListView) rootView.findViewById((R.id.listView1));
-		
+		api = MainActivity.api;
+
+			// Вкладки
+		tabHost = (TabHost) rootView.findViewById(android.R.id.tabhost);
+        tabHost.setup(); // инициализация
         
         ShowFriendList(uid == null ? account.user_id : uid); // Показ списка друзей
         
@@ -73,20 +79,22 @@ public class Friends extends Fragment {
             @Override
             public void run(){
                 try {
-            		/*user = api.getFriends(account.user_id, "photo_50, first_name, last_name", 0, 5, "hints", null, null);
-            		for (int i = 0; i < user.size(); i++) {
-                		names.add(user.get(i).first_name + " " + user.get(i).last_name);
-                		image_list.add(grabImageFromUrl(user.get(i).photo));
-                	} */ 
-            		friends = api.getFriends(id, "photo_50, first_name, last_name, online", 0, 0, "name", null, null);
-            		/*names.add("");
-            		image_list.add(grabImageFromUrl(user.get(0).photo));
-            		for (int i = 0; i < user.size(); i++) {
-                		names.add(user.get(i).first_name + " " + user.get(i).last_name);
-                		image_list.add(grabImageFromUrl(user.get(i).photo));
-                	}*/
+                	ArrayList<User> us;
+                	friends = new ArrayList<User>();
+                	online_friends = new ArrayList<User>();
+                	us = api.getFriends(id, "photo_50, first_name, last_name, online", 0, 5, "hints", null, null);
+                	for (User u : us) {                    	
+	                    	friends.add(u);                        
+	                }
+                	favorite_user_count = us.size();
+	                us = api.getFriends(id, "photo_50, first_name, last_name, online", 0, 0, "name", null, null);
+                	for (User u : us) {                    	
+                    	friends.add(u);
+                    	if (u.online)
+	                    	online_friends.add(u);
+                	}
 
-                    runOnUiThread(successRunnable);
+            		runOnUiThread(successRunnable);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -101,37 +109,50 @@ public class Friends extends Fragment {
 	Runnable successRunnable = new Runnable(){
         @Override
         public void run() {
-
+        	TabHost.TabSpec tabSpec; // создаем вкладку и указываем тег
+            tabSpec = tabHost.newTabSpec("tag1"); // название вкладки
+            tabSpec.setIndicator(String.valueOf(friends.size()) +" друзей"); // указываем id компонента из FrameLayout, он и станет содержимым
+            tabSpec.setContent(R.id.tab1); // добавляем в корневой элемент
+            tabHost.addTab(tabSpec);
+            
+            tabSpec = tabHost.newTabSpec("tag2");
+            tabSpec.setIndicator(String.valueOf(online_friends.size()) + " онлайн");
+            tabSpec.setContent(R.id.tab2);        
+            tabHost.addTab(tabSpec);
+            
+            tabHost.setCurrentTabByTag("tag1"); // вторая вкладка будет выбрана по умолчанию
         	
         	if (friends != null) {
-        		adapter = new ContactsArrayAdapter(context, friends);
-        		list.setAdapter(adapter);
-    			list.setOnItemClickListener(new OnItemClickListener() {
+        		adapter_all = new ContactsArrayAdapter(context, friends, favorite_user_count);
+        		list_all.setAdapter(adapter_all);
+        		list_all.setFastScrollEnabled(true);
+    			list_all.setOnItemClickListener(new OnItemClickListener() {
     				@Override
     				public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-    					User us = (User) list.getItemAtPosition(position);
-    					
-    					fragment=new UserProfile(us.uid);
+    					User us = (User) list_all.getItemAtPosition(position);
+    					fragment = new UserProfile(us.uid);
     					FragmentManager fragmentManager = getFragmentManager();
     					fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();
-    					
-    					/*
-    					helper.WriteDebug("ОТКРЫВАЕМ Контакт " + us.uid);
-    		
-    					Intent intent = new Intent(ContactsActivity.this, ConversationActivity.class);
-    					intent.putExtra("uid", us.uid);
-    					intent.putExtra("name", us.first_name + " " + us.last_name);
-    					startActivity(intent);	
-    					*/
     				}
     			});
     			
-    		
+    			adapter_online = new ContactsOnlineArrayAdapter(context, online_friends);
+    			list_online.setAdapter(adapter_online);
+    			list_online.setOnItemClickListener(new OnItemClickListener() {
+    				@Override
+    				public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    					User us = (User) list_online.getItemAtPosition(position);
+    					fragment = new UserProfile(us.uid);
+    					FragmentManager fragmentManager = getFragmentManager();
+    					fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();
+    				}
+    			});
+    			
     			((EditText) getView().findViewById(R.id.contactsSearch)).addTextChangedListener(new TextWatcher() {
     				@Override
     				public void onTextChanged(CharSequence s, int start, int before, int count) {
-    					helper.WriteInfo("Ищу: " + s.toString());
-    					adapter.getFilter().filter(s.toString());
+    					adapter_all.getFilter().filter(s.toString());
+    					adapter_online.getFilter().filter(s.toString());
     				}
 
     				@Override
@@ -148,40 +169,7 @@ public class Friends extends Fragment {
     				}
     			});	
     		}
-        	
-        	
-        	
-        	/*FriendListItem adapter = new FriendListItem(context, names, image_list);
-        	
-        	((ListView) getView().findViewById(R.id.listView1)).setAdapter(adapter);
-        	((ListView) getView().findViewById(R.id.listView1)).setOnItemClickListener(new AdapterView.OnItemClickListener() {
-        	    @Override
-        	    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        	    	// OnClick
-        	    }
-        	});*/
         }
     };
-    
-    
-    
-    
-    
-    
-    
-    
-		// Получение картинки из Интернета
-    public Drawable grabImageFromUrl(String url) {
-		try {
-			return Drawable.createFromStream((InputStream) new URL(url).getContent(), "src");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-    
-	// Объвление компонентов
-	private void setupUI() {
 
-	} 
 }

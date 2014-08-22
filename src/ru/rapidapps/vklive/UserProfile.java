@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -66,6 +67,7 @@ public class UserProfile extends Fragment implements OnClickListener
 		rootView.findViewById(R.id.friends_but).setOnClickListener(this);
 		rootView.findViewById(R.id.info_but).setOnClickListener(this);
 		rootView.findViewById(R.id.all_photos).setOnClickListener(this);
+		rootView.findViewById(R.id.audios_but).setOnClickListener(this);
 
 		ShowUserProfile(uid == null ? account.user_id : uid); // Показ страницы
 
@@ -124,7 +126,12 @@ public class UserProfile extends Fragment implements OnClickListener
 	    		break;	    	
 	    	case R.id.info_but:
 	    		fragment=new UserInfo(user.uid);
-	    		break;	    	
+	    		break;	  
+	    	case R.id.audios_but:
+	    		fragment=new Audios(user.uid);
+	    		break;
+	    	default:
+	    		return;	    		
 	    }	    
 	    FragmentTransaction transaction = getFragmentManager().beginTransaction();
 	    transaction.replace(R.id.frame_container, fragment);
@@ -167,7 +174,7 @@ public class UserProfile extends Fragment implements OnClickListener
 			{				
 				city_name="Город скрыт";
 			}
-			if (user.birthdate != null)
+			if (getAgeFromBDay(user.birthdate) != null)
 			{
 				age=getAgeFromBDay(user.birthdate);
 			}
@@ -211,9 +218,9 @@ public class UserProfile extends Fragment implements OnClickListener
 			{
 				((Button) getView().findViewById(R.id.groups_but)).setVisibility(View.GONE);
 			}
-			if(user.user_photos_count!=0)
+			if(user.photos_count!=0)
 			{
-				((TextView)getView().findViewById(R.id.all_photo_count)).setText(String.valueOf(user.user_photos_count)+" фото");
+				((TextView)getView().findViewById(R.id.all_photo_count)).setText(String.valueOf(user.photos_count)+" фото");
 				((Button) getView().findViewById(R.id.photos_but)).setText(setPhotosText());
 				((Button) getView().findViewById(R.id.photos_but)).setVisibility(View.VISIBLE);
 			}
@@ -289,8 +296,8 @@ public class UserProfile extends Fragment implements OnClickListener
 	{
 		String add="фото";	
 		
-		SpannableString res=new SpannableString(String.valueOf(user.user_photos_count)+"\n"+add);
-		res.setSpan(new RelativeSizeSpan(2f), 0, String.valueOf(user.user_photos_count).length(),0);
+		SpannableString res=new SpannableString(String.valueOf(user.photos_count)+"\n"+add);
+		res.setSpan(new RelativeSizeSpan(2f), 0, String.valueOf(user.photos_count).length(),0);
 		
 		return res;	
 	}
