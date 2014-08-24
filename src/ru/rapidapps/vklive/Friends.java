@@ -31,11 +31,11 @@ public class Friends extends Fragment {
 	private Long uid;
 	public int favorite_user_count;
 	
-		// Массив пользователей
+		// ГЊГ Г±Г±ГЁГў ГЇГ®Г«ГјГ§Г®ГўГ ГІГҐГ«ГҐГ©
     public ArrayList<User> friends, online_friends;
     public ArrayList<String> names = new ArrayList<String>();
 	
-		// Апи
+		// ГЂГЇГЁ
 	public static Account account = new Account();
 	public static Api api;
 	
@@ -65,11 +65,11 @@ public class Friends extends Fragment {
 		account = MainActivity.account;
 		api = MainActivity.api;
 
-			// Вкладки
+			// Г‚ГЄГ«Г Г¤ГЄГЁ
 		tabHost = (TabHost) rootView.findViewById(android.R.id.tabhost);
-        tabHost.setup(); // инициализация
+        tabHost.setup(); // ГЁГ­ГЁГ¶ГЁГ Г«ГЁГ§Г Г¶ГЁГї
         
-        ShowFriendList(uid == null ? account.user_id : uid); // Показ списка друзей
+        ShowFriendList(uid == null ? account.user_id : uid); // ГЏГ®ГЄГ Г§ Г±ГЇГЁГ±ГЄГ  Г¤Г°ГіГ§ГҐГ©
         
         return rootView; 
     }
@@ -109,18 +109,18 @@ public class Friends extends Fragment {
 	Runnable successRunnable = new Runnable(){
         @Override
         public void run() {
-        	TabHost.TabSpec tabSpec; // создаем вкладку и указываем тег
-            tabSpec = tabHost.newTabSpec("tag1"); // название вкладки
-            tabSpec.setIndicator(String.valueOf(friends.size()) +" друзей"); // указываем id компонента из FrameLayout, он и станет содержимым
-            tabSpec.setContent(R.id.tab1); // добавляем в корневой элемент
+        	TabHost.TabSpec tabSpec; // Г±Г®Г§Г¤Г ГҐГ¬ ГўГЄГ«Г Г¤ГЄГі ГЁ ГіГЄГ Г§Г»ГўГ ГҐГ¬ ГІГҐГЈ
+            tabSpec = tabHost.newTabSpec("tag1"); // Г­Г Г§ГўГ Г­ГЁГҐ ГўГЄГ«Г Г¤ГЄГЁ
+            tabSpec.setIndicator(String.valueOf(friends.size()) +" Г¤Г°ГіГ§ГҐГ©"); // ГіГЄГ Г§Г»ГўГ ГҐГ¬ id ГЄГ®Г¬ГЇГ®Г­ГҐГ­ГІГ  ГЁГ§ FrameLayout, Г®Г­ ГЁ Г±ГІГ Г­ГҐГІ Г±Г®Г¤ГҐГ°Г¦ГЁГ¬Г»Г¬
+            tabSpec.setContent(R.id.tab1); // Г¤Г®ГЎГ ГўГ«ГїГҐГ¬ Гў ГЄГ®Г°Г­ГҐГўГ®Г© ГЅГ«ГҐГ¬ГҐГ­ГІ
             tabHost.addTab(tabSpec);
             
             tabSpec = tabHost.newTabSpec("tag2");
-            tabSpec.setIndicator(String.valueOf(online_friends.size()) + " онлайн");
+            tabSpec.setIndicator(String.valueOf(online_friends.size()) + " Г®Г­Г«Г Г©Г­");
             tabSpec.setContent(R.id.tab2);        
             tabHost.addTab(tabSpec);
             
-            tabHost.setCurrentTabByTag("tag1"); // вторая вкладка будет выбрана по умолчанию
+            tabHost.setCurrentTabByTag("tag1"); // ГўГІГ®Г°Г Гї ГўГЄГ«Г Г¤ГЄГ  ГЎГіГ¤ГҐГІ ГўГ»ГЎГ°Г Г­Г  ГЇГ® ГіГ¬Г®Г«Г·Г Г­ГЁГѕ
         	
         	if (friends != null) {
         		adapter_all = new ContactsArrayAdapter(context, friends, favorite_user_count);
@@ -140,8 +140,8 @@ public class Friends extends Fragment {
     			list_online.setAdapter(adapter_online);
     			list_online.setOnItemClickListener(new OnItemClickListener() {
     				@Override
-    				public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-    					User us = (User) list_online.getItemAtPosition(position);
+    				public void onItemClick(AdapterView<?> parent, View view, int position, long id) {    					
+    					User us = (User) list_online.getItemAtPosition(position);    				    
     					fragment = new UserProfile(us.uid);
     					FragmentManager fragmentManager = getFragmentManager();
     					fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();

@@ -97,7 +97,6 @@ public class ContactsArrayAdapter extends ArrayAdapter<User> implements Filterab
 	       
 	    	int rowType = getItemViewType(position);
 	    	if (convertView == null) {
-	    		LayoutInflater inflator = activity.getLayoutInflater();
 	    		final ViewHolder viewHolder = new ViewHolder();
 	    			
 	            switch (rowType) {
@@ -107,7 +106,7 @@ public class ContactsArrayAdapter extends ArrayAdapter<User> implements Filterab
 		            viewHolder.image = (ImageView) view.findViewById(R.id.icon);
 		            viewHolder.online = (ImageView) view.findViewById(R.id.status);
 					break;
-				case 1:
+				case 1:					
 					view = inflater.inflate(R.layout.friend_list_header, null);
 					viewHolder.name = (TextView) view.findViewById(R.id.textSeparator);
 					break;
@@ -133,8 +132,8 @@ public class ContactsArrayAdapter extends ArrayAdapter<User> implements Filterab
 			case 1:
 				holder.name.setText(usr.first_name);
 				break;
-	        } 
-	            
+	        }
+	        
 	        return view;
 	    }
 
@@ -177,6 +176,12 @@ public class ContactsArrayAdapter extends ArrayAdapter<User> implements Filterab
             }
         }
 
+	    @Override
+		public boolean isEnabled(int position)
+	    {	    	
+	    	return getItemViewType(position)==0;
+	    }
+	    
 		@Override
 		public int getPositionForSection(int section) {
 			return alphaIndexer.get(sections[section]);

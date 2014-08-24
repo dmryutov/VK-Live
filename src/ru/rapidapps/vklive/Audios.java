@@ -115,8 +115,7 @@ public class Audios extends Fragment implements OnItemClickListener
 	        {
 	            mp.setDataSource(aud.url);
 	            mp.prepare();
-	            mp.start();
-	            list_audio.getChildAt(lastPos).findViewById(R.id.audio_pp).setBackground(null);
+	            mp.start();	            
 	            list_audio.getChildAt(position).findViewById(R.id.audio_pp).setBackgroundResource(android.R.drawable.ic_media_play);
 	            lastPos=position;
 	        } catch (Exception e)
@@ -128,7 +127,7 @@ public class Audios extends Fragment implements OnItemClickListener
 	    {
 	        isPlaying = false;
 	        stopPlaying();
-	        list_audio.getChildAt(lastPos).findViewById(R.id.audio_pp).setBackgroundResource(android.R.drawable.ic_media_pause);
+	        list_audio.getChildAt(lastPos).findViewById(R.id.audio_pp).setBackgroundDrawable(null);
 	    }
 	}
     

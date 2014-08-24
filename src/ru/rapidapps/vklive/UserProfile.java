@@ -14,7 +14,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -90,7 +89,7 @@ public class UserProfile extends Fragment implements OnClickListener
 					draw = grabImageFromUrl(user.photo_200);
 					cid.add((long)user.city);
 					city = api.getCities(cid).get(0);
-					photos=grabImagePreviewsFromUrl(api.getAllPhotos(user.uid, 0, null, false));					
+					//photos=grabImagePreviewsFromUrl(api.getAllPhotos(user.uid, 0, null, false));					
 				} catch (Exception e) 
 				{
 					e.printStackTrace();
@@ -110,7 +109,7 @@ public class UserProfile extends Fragment implements OnClickListener
 		@Override
 		public void run()
 		{			
-			setPhotosBar();			
+			//setPhotosBar();			
 			setTextsAndVis();
 		}
 	};	
@@ -153,8 +152,8 @@ public class UserProfile extends Fragment implements OnClickListener
 		{
 			iv = new ImageView (context);
 			lp=new LinearLayout.LayoutParams(photos.get(i).getIntrinsicWidth()*height/photos.get(i).getIntrinsicHeight(),height);
-			lp.setMargins(5, 0, 5, 0);
-			iv.setBackground(photos.get(i));
+			lp.setMargins(5, 0, 5, 0);			
+			iv.setBackgroundDrawable(photos.get(i));
 			lv.addView(iv);
 			iv.setLayoutParams(lp);
 		}
